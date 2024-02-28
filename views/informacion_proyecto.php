@@ -67,7 +67,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $guardado = true;
 
         // Mostrar mensaje de éxito
-        echo '<script>alert("¡Se guardó correctamente ahora puede generar el PDF!");</script>';
         $readonly = 'readonly';
     } else {
         $readonly = '';
@@ -132,6 +131,16 @@ if (!empty($idProyecto)) {
                     <p><strong>Descripción del Proyecto:</strong> <?php echo $proyecto['descripcion']; ?></p>
                 </div>
             </div>
+            <?php if ($guardado) : ?>
+
+                <div class="d-flex justify-content-center">
+                    <div class="alert alert-success alert-dismissible fade show text-center">
+                        ¡Se guardó correctamente ahora puede generar el PDF!
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                </div>
+            <?php endif; ?>
+
             <div class="container container-fluid d-flex justify-content-evenly contenedor-botones">
                 <a href="home.php" class="btn btn-warning mb-2">Volver</a>
                 <a href="materiales.php?id=<?php echo $idProyecto; ?>" class="btn btn-dark mb-2">Ver Lista de Materiales</a>
@@ -202,7 +211,7 @@ if (!empty($idProyecto)) {
                 </div>
                 <div class="text-center">
                     <?php
-                    // Si no hay materiales, deFshabilitar el botón Guardar
+                    // Si no hay materiales, deshabilitar el botón Guardar
                     if ($num_materiales == 0) {
                         echo '<button type="submit" class="btn btn-primary my-2" disabled>Guardar</button>';
                     } else {
@@ -213,26 +222,27 @@ if (!empty($idProyecto)) {
             </form>
 
 
-    <?php
+
+            <script>
+                // Script JavaScript para cambiar entre solo lectura y editable al hacer clic en "Editar"
+                const botonesEditar = document.querySelectorAll('.editar-cantidad');
+                botonesEditar.forEach(boton => {
+                    boton.addEventListener('click', function() {
+                        const codigoMaterial = this.getAttribute('data-codigo');
+                        const inputCantidad = document.querySelector('input[name="cantidad_' + codigoMaterial + '"]');
+                        inputCantidad.removeAttribute('readonly');
+                        inputCantidad.focus(); // Opcional: enfocar el campo automáticamente al hacer clic en "Editar"
+                    });
+                });
+            </script>
+        </body>
+
+        </html>
+<?php
     } else {
         echo "<p>No se encontró el proyecto.</p>";
     }
 } else {
     echo "<p>No se proporcionó un ID de proyecto válido.</p>";
 }
-    ?>
-    <script>
-        // Script JavaScript para cambiar entre solo lectura y editable al hacer clic en "Editar"
-        const botonesEditar = document.querySelectorAll('.editar-cantidad');
-        botonesEditar.forEach(boton => {
-            boton.addEventListener('click', function() {
-                const codigoMaterial = this.getAttribute('data-codigo');
-                const inputCantidad = document.querySelector('input[name="cantidad_' + codigoMaterial + '"]');
-                inputCantidad.removeAttribute('readonly');
-                inputCantidad.focus(); // Opcional: enfocar el campo automáticamente al hacer clic en "Editar"
-            });
-        });
-    </script>
-        </body>
-
-        </html>
+?>
